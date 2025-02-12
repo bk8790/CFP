@@ -1,0 +1,56 @@
+<%@ page import="java.sql.*"%>
+
+
+<%@ page  import="java.sql.*" import="databaseconnection.databasecon" import="javax.swing.JOptionPane"%>
+
+
+
+<%! String type, cost, bknm, city,ref, state, zip, tele, adrs, htno, pwd;
+	int i=0;
+%>
+<%
+
+bknm=request.getParameter("bknm");
+
+type=request.getParameter("type");
+
+cost=request.getParameter("cost");
+
+ref=request.getParameter("ref");
+%>
+<%
+try{
+
+Connection con = databasecon.getconnection();
+Statement st=con.createStatement();
+Statement st1=con.createStatement();
+String htno=(String)session.getAttribute("htno");
+
+ResultSet rst=st1.executeQuery("select name,adrs from register where htno='"+session.getAttribute("htno")+"'");
+if(rst.next()){
+
+if(type.equals("HomeDelivery")){
+
+ st.executeUpdate("insert into bookinfo values('"+rst.getString(1)+"','"+htno+"','"+bknm+"','"+cost+"','"+type+"','"+rst.getString(2)+"' )");
+
+}else{
+
+st.executeUpdate("insert into bookinfo values('"+rst.getString(1)+"','"+htno+"','"+bknm+"','"+cost+"','"+type+"','None' )");
+
+}
+
+
+	response.sendRedirect("requestbks.jsp?msg=suces");
+	
+	}
+
+
+
+
+
+}
+catch(Exception e)
+{
+e.printStackTrace();
+	}
+%>

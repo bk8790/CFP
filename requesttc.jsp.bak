@@ -1,0 +1,82 @@
+	<%@include file="uheader.jsp"%>
+<%@ page  import="java.sql.*" import="databaseconnection.databasecon" %>
+<script>
+function myFunction() {
+
+    var x = document.getElementById("mySelect").value;
+window.location="requesttc.jsp?dtype="+x ;
+}
+</script>
+<%
+if(request.getParameter("msg")!=null){
+
+out.println("<script>alert('Book details added successfully')</script>");
+}
+
+
+Connection con = databasecon.getconnection();
+Statement st=con.createStatement();
+Statement st1=con.createStatement();
+String htno=(String)session.getAttribute("htno");
+
+ResultSet rst=st1.executeQuery("select name from register where htno='"+session.getAttribute("htno")+"'");
+if(rst.next()){
+
+
+%><section class="logins py-5">
+		<div class="container py-xl-5 py-lg-3">
+			<div class="title-section mb-md-5 mb-4">
+				<h6 class="w3ls-title-sub"></h6>
+				<center><h3 class="w3ls-title text-uppercase text-dark font-weight-bold">Request For TC</h3></center>
+			</div>
+			<div class="login px-sm-4 mx-auto mw-100 login-wrapper">
+				<form class="login-wrapper" action="requesttc2.jsp" method="post">
+					
+					<div class="form-group">
+						<label>Student Name</label>
+						<input type="text" class="form-control" name="stdntnm" value=<%=rst.getString(1)%> placeholder="" readonly>
+					</div>
+					<div class="form-group">
+						<label>Hallticket No.</label>
+						<input type="text" class="form-control" name="htno" value=<%=htno%> placeholder="" readonly>
+					</div>
+
+					<div class="form-group">
+						<label>Received Type</label>
+						<select name="type" class="form-control" id="mySelect" required  onchange="myFunction()">
+					
+
+						<% if(request.getParameter("dtype")!=null){%>
+
+						<option value="<%=request.getParameter("dtype")%>" selected> <%=request.getParameter("dtype")%></option>
+						<%}
+						else{
+							%>
+						<option value=""> --- Select ---</option>
+						<option value="HomeDelivery">HomeDelivery</option>
+						<option value="TimeSlot">TimeSlot</option>
+					
+						<%}%>
+							</select>
+</div>
+
+						<%
+						if(request.getParameter("dtype")!=null&&request.getParameter("dtype").equals("TimeSlot")){%>
+				
+				<div class="form-group">
+						<label>Date</label>
+						<input type="date"  class="form-control" name="date"   placeholder="" required="">
+					</div>
+					<%}%>
+<br><br>
+				<div class="col-md-12 form-group">
+								<button type="submit" value="submit" class="primary-btn">Submit</button>
+							
+							</div>
+					
+				</form>
+			</div>
+		</div>
+	</section>
+<%}%>
+	<%@ include file="footer.jsp"%>
